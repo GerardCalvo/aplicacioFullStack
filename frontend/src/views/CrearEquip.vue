@@ -13,7 +13,7 @@ const eq_photo = ref('');
 const error = ref(null);
 
 const crearEquip = async () => {
-  if (!userStore.user) return alert("Has de estar loguejat per afegir equips");
+  if (!userStore.user) return alert("Has d'estar loguejat");
 
   try {
     const res = await fetch('http://localhost:3000/api/equips', {
@@ -32,12 +32,10 @@ const crearEquip = async () => {
 
     if (!res.ok) {
       const data = await res.json();
-      throw new Error(data.error || 'Error afegint l’equip');
+      throw new Error(data.error || 'Error afegint el club');
     }
 
-    alert('Equip afegit correctament');
     router.push('/equips');
-
   } catch (err) {
     error.value = err.message;
   }
@@ -45,87 +43,77 @@ const crearEquip = async () => {
 </script>
 
 <template>
-  <div class="crear-equip-container">
-    <h1>Afegir nou equip F1 2026</h1>
+  <div class="form-container">
+    <h1>⚽ Afegir nou club</h1>
+
     <div v-if="error" class="error">{{ error }}</div>
 
-    <form @submit.prevent="crearEquip" class="equip-form">
-      <label>
-        Nom de l’equip:
-        <input v-model="eq_nom" type="text" required />
-      </label>
+    <form @submit.prevent="crearEquip">
+      <div class="form-group">
+        <label for="eq_nom">Nom del club</label>
+        <input id="eq_nom" v-model="eq_nom" placeholder="Nom del club" required />
+      </div>
 
-      <label>
-        País:
-        <input v-model="eq_pais" type="text" required />
-      </label>
+      <div class="form-group">
+        <label for="eq_pais">País</label>
+        <input id="eq_pais" v-model="eq_pais" placeholder="País" required />
+      </div>
 
-      <label>
-        Títols de constructors:
-        <input v-model="eq_campions" type="number" min="0" required />
-      </label>
+      <div class="form-group">
+        <label for="eq_campions">Títols Champions League</label>
+        <input id="eq_campions" v-model="eq_campions" type="number" min="0" placeholder="Títols Champions League" required />
+      </div>
 
-      <label>
-        URL del logo:
-        <input v-model="eq_photo" type="text" required />
-      </label>
+      <div class="form-group">
+        <label for="eq_photo">URL del logo</label>
+        <input id="eq_photo" v-model="eq_photo" placeholder="URL del logo" required />
+      </div>
 
-      <button type="submit" class="btn">Afegir equip</button>
+      <button type="submit">Crear club</button>
     </form>
   </div>
 </template>
 
 <style scoped>
-.crear-equip-container {
+.form-container {
   max-width: 500px;
-  margin: 2rem auto;
+  margin: 4rem auto;
+  background: #1e293b;
   padding: 2rem;
-  font-family: Arial, sans-serif;
-  text-align: center;
-  background: #f9f9f9;
-  border-radius: 16px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  border-radius: 20px;
+  color: white;
 }
 
-.equip-form {
+.form-group {
+  margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-top: 1rem;
 }
 
 label {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
-  font-weight: 500;
+  margin-bottom: 0.3rem;
+  font-weight: bold;
 }
 
 input {
-  padding: 0.5rem;
+  width: 100%;
+  padding: 0.7rem;
   border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
+  border: none;
 }
 
-.btn {
-  margin-top: 1rem;
-  padding: 0.6rem 1.2rem;
-  background-color: #229753;
-  color: white;
+button {
+  width: 100%;
+  padding: 0.8rem;
+  background: #22c55e;
   border: none;
   border-radius: 10px;
+  color: white;
   font-weight: bold;
-  cursor: pointer;
-  transition: 0.2s;
-}
-
-.btn:hover {
-  background-color: #39ac00;
 }
 
 .error {
-  color: red;
+  color: #ef4444;
   margin-bottom: 1rem;
 }
 </style>

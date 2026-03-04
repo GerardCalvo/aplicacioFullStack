@@ -1,120 +1,67 @@
 <script setup>
-import { reactive, ref, onMounted } from "vue";
-import { useRouter, RouterLink } from "vue-router";
+import { reactive, ref } from "vue";
+import { useRouter } from "vue-router";
 import { useUserStore } from "@/stores/useUser.js";
 
 const router = useRouter();
 const userStore = useUserStore();
 
 const form = reactive({ mail: "", contraseña: "" });
-const message = ref("");
 const error = ref("");
 
-onMounted(() => userStore.loadUser());
-
 const login = async () => {
-  message.value = "";
-  error.value = "";
+  const res = await fetch("/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(form)
+  });
 
-  try {
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form)
-    });
+  const data = await res.json();
 
-    const data = await res.json();
-
-    if (!res.ok) {
-      error.value = data.error || "Error al iniciar sesión";
-      return;
-    }
-
-    userStore.setUser(data.user, data.token);
-
-    router.push("/");
-    form.mail = "";
-    form.contraseña = "";
-
-  } catch {
-    error.value = "No se pudo conectar con el servidor";
+  if (!res.ok) {
+    error.value = data.error;
+    return;
   }
+
+  userStore.setUser(data.user, data.token);
+  router.push("/");
 };
 </script>
 
 <template>
-  <div class="login">
-    <h2>Iniciar sesión</h2>
-    <form @submit.prevent="login">
-      <input type="email" placeholder="Email" v-model="form.mail" required />
-      <input type="password" placeholder="Contraseña" v-model="form.contraseña" required />
-      <button type="submit">Iniciar sesión</button>
-    </form>
-    <p class="register-text">
-      No tens compte encara?
-      <RouterLink to="/register" class="register-link">Registra't!</RouterLink>
-    </p>
-    <p v-if="message" class="success">{{ message }}</p>
+  <div class="auth">
+    <h2>Login ⚽</h2>
+    <input v-model="form.mail" placeholder="Email" />
+    <input type="password" v-model="form.contraseña" placeholder="Contraseña" />
+    <button @click="login">Entrar</button>
     <p v-if="error" class="error">{{ error }}</p>
   </div>
 </template>
 
-
 <style scoped>
-.login {
+.auth {
   max-width: 400px;
-  margin: 2rem auto;
-  padding: 1.5rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  text-align: center;
+  margin: 4rem auto;
+  background: #1e293b;
+  padding: 2rem;
+  border-radius: 20px;
+  color: white;
 }
 
-input,
-button {
+input {
   width: 100%;
   margin-bottom: 1rem;
-  padding: 0.6rem;
+  padding: 0.7rem;
+  border-radius: 8px;
+  border: none;
 }
 
 button {
-  cursor: pointer;
-  background-color: #3b82f6;
-  color: white;
+  width: 100%;
+  padding: 0.8rem;
+  background: #22c55e;
   border: none;
-  border-radius: 8px;
-  transition: background-color 0.2s;
+  border-radius: 10px;
+  color: white;
 }
-
-button:hover {
-  background-color: #2563eb;
-}
-
-.success {
-  color: green;
-}
-
-.error {
-  color: red;
-}
-
-.register-text {
-  margin-top: 1rem;
-  font-size: 0.95rem;
-  color: #374151;
-}
-
-.register-link {
-  color: #3b82f6; 
-  text-decoration: none;
-  font-weight: 600;
-  margin-left: 0.3rem;
-  transition: color 0.2s;
-}
-
-.register-link:hover {
-  color: #2563eb; 
-  text-decoration: underline;
-}
-
 </style>

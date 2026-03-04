@@ -3,20 +3,23 @@ const router = express.Router();
 const pool = require("../database/db.js");
 const auth = require("../middleware/auth.js");
 
-// GET /teams -> todos los equipos
+// ================= OBTENER TODOS LOS CLUBES =================
 router.get('/', async (req, res) => {
   try {
-    const result = await pool.query('SELECT eq_id, eq_nom, eq_pais, eq_campions, eq_photo FROM Equips ORDER BY eq_id');
+    const result = await pool.query(
+      'SELECT eq_id, eq_nom, eq_pais, eq_campions, eq_photo FROM Equips ORDER BY eq_id'
+    );
     res.json(result.rows);
   } catch (err) {
-    console.error('Error al obtener equipos:', err);
-    res.status(500).json({ error: 'Error al obtener equipos' });
+    console.error('Error al obtener clubes:', err);
+    res.status(500).json({ error: 'Error al obtener clubes' });
   }
 });
 
-// GET /teams/:id -> equipo por ID
+// ================= OBTENER CLUB POR ID =================
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
+
   try {
     const result = await pool.query(
       'SELECT eq_id, eq_nom, eq_pais, eq_campions, eq_photo FROM Equips WHERE eq_id = $1',
@@ -24,17 +27,17 @@ router.get('/:id', async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Equipo no encontrado' });
+      return res.status(404).json({ error: 'Club no encontrado' });
     }
 
     res.json(result.rows[0]);
   } catch (err) {
-    console.error('Error al obtener equipo:', err);
-    res.status(500).json({ error: 'Error al obtener equipo' });
+    console.error('Error al obtener club:', err);
+    res.status(500).json({ error: 'Error al obtener club' });
   }
 });
 
-// POST /teams -> añadir equipo
+// ================= AÑADIR CLUB =================
 router.post('/', auth, async (req, res) => {
   const { eq_nom, eq_pais, eq_campions, eq_photo } = req.body;
 
@@ -48,14 +51,16 @@ router.post('/', auth, async (req, res) => {
        VALUES ($1, $2, $3, $4) RETURNING *`,
       [eq_nom, eq_pais, eq_campions || 0, eq_photo || null]
     );
+
     res.status(201).json(result.rows[0]);
+
   } catch (err) {
-    console.error('Error al añadir equipo:', err);
-    res.status(500).json({ error: 'Error al añadir equipo' });
+    console.error('Error al añadir club:', err);
+    res.status(500).json({ error: 'Error al añadir club' });
   }
 });
 
-// PUT /teams/:id -> modificar equipo
+// ================= MODIFICAR CLUB =================
 router.put('/:id', auth, async (req, res) => {
   const { id } = req.params;
   const { eq_nom, eq_pais, eq_campions, eq_photo } = req.body;
@@ -73,17 +78,18 @@ router.put('/:id', auth, async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'Equipo no encontrado' });
+      return res.status(404).json({ error: 'Club no encontrado' });
     }
 
     res.json(result.rows[0]);
+
   } catch (err) {
-    console.error('Error al modificar equipo:', err);
-    res.status(500).json({ error: 'Error al modificar equipo' });
+    console.error('Error al modificar club:', err);
+    res.status(500).json({ error: 'Error al modificar club' });
   }
 });
 
-// DELETE /teams/:id -> eliminar equipo
+// ================= ELIMINAR CLUB =================
 router.delete("/:id", auth, async (req, res) => {
   const { id } = req.params;
 
@@ -94,13 +100,14 @@ router.delete("/:id", auth, async (req, res) => {
     );
 
     if (result.rowCount === 0) {
-      return res.status(404).json({ error: "Equipo no encontrado" });
+      return res.status(404).json({ error: "Club no encontrado" });
     }
 
-    res.json({ message: "Equipo eliminado", equipo: result.rows[0] });
+    res.json({ message: "Club eliminado correctamente", club: result.rows[0] });
+
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Error eliminando equipo" });
+    res.status(500).json({ error: "Error eliminando club" });
   }
 });
 

@@ -14,21 +14,20 @@ const routes = [
   { path: "/", name: "Home", component: Home },
   { path: "/login", name: "Login", component: LoginForm },
   { path: "/register", name: "Register", component: RegisterForm },
+  { path: "/equips", name: "Equips", component: Equips },
+  { path: "/equips/:id", name: "EquipDetall", component: EquipDetall },
   {
-    path: "/equips", name: "Equips", component: Equips
-  },
-  {
-    path: "/equips/:id", name: "EquipDetall", component: EquipDetall
-  },
-  {
-    path: "/crearEquip", name: "CrearEquip", component: CrearEquip,
+    path: "/crearEquip",
+    name: "CrearEquip",
+    component: CrearEquip,
     meta: { requiresAuth: true }
   },
   {
-    path: "/equips/editar/:id", name: "EditarEquip", component: EditarEquip,
+    path: "/equips/editar/:id",
+    name: "EditarEquip",
+    component: EditarEquip,
     meta: { requiresAuth: true }
   },
-  // Página para accesos prohibidos
   { path: "/forbidden", name: "Forbidden", component: Forbidden },
 ]
 
@@ -37,21 +36,12 @@ const router = createRouter({
   routes
 })
 
-// Guardia global
 router.beforeEach((to, from, next) => {
   const userStore = useUserStore()
-  userStore.loadUser() // cargar user desde localStorage si existe
+  userStore.loadUser()
 
-  // Ruta requiere login
-  if (to.meta.requiresAuth) {
-    if (!userStore.user) {
-      return next("/forbidden") // no logueado
-    }
-
-    // Si hay meta.role, verificar rol
-    if (to.meta.role && userStore.user.rol !== to.meta.role) {
-      return next("/forbidden") // rol no permitido
-    }
+  if (to.meta.requiresAuth && !userStore.user) {
+    return next("/forbidden")
   }
 
   next()

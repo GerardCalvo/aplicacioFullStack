@@ -1,4 +1,4 @@
-const pool = require("./db"); // tu archivo con Pool
+const pool = require("./db");
 
 async function crearBaseDeDatos() {
   try {
@@ -6,7 +6,7 @@ async function crearBaseDeDatos() {
     await pool.query(`DROP TABLE IF EXISTS Equips`);
     await pool.query(`DROP TABLE IF EXISTS Usuaris`);
 
-    // Usuaris
+    // ================= USUARIOS =================
     await pool.query(`
       CREATE TABLE IF NOT EXISTS Usuaris (
         usu_id SERIAL PRIMARY KEY,
@@ -18,7 +18,7 @@ async function crearBaseDeDatos() {
       )
     `);
 
-    // Crear tabla de equipos
+    // ================= CLUBES DE FÚTBOL =================
     await pool.query(`
       CREATE TABLE IF NOT EXISTS Equips (
         eq_id SERIAL PRIMARY KEY,
@@ -30,21 +30,56 @@ async function crearBaseDeDatos() {
     `);
 
     const teams = [
-      { name: "McLaren", country: "United Kingdom", worldChampionships: 10, photo: "https://upload.wikimedia.org/wikipedia/commons/2/20/McLaren_Racing_logo.png" },
-      { name: "Mercedes", country: "Germany", worldChampionships: 8, photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Mercedes_AMG_Petronas_F1_Logo.svg/960px-Mercedes_AMG_Petronas_F1_Logo.svg.png" },
-      { name: "Red Bull Racing", country: "Austria", worldChampionships: 6, photo: "https://i.pinimg.com/736x/8c/99/28/8c992817370af5183f95ce718d88ec5c.jpg" },
-      { name: "Ferrari", country: "Italy", worldChampionships: 16, photo: "https://upload.wikimedia.org/wikipedia/en/thumb/d/df/Scuderia_Ferrari_HP_logo_24.svg/1280px-Scuderia_Ferrari_HP_logo_24.svg.png" },
-      { name: "Williams", country: "United Kingdom", worldChampionships: 9, photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Williams_F1_logo_2026_%28Corrigindo%29.png/330px-Williams_F1_logo_2026_%28Corrigindo%29.png" },
-      { name: "Racing Bulls", country: "Italy", worldChampionships: 0, photo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0ZX49j667LZEqYkJYYI3FwwtWM83FBqUiiA&s" },
-      { name: "Aston Martin", country: "United Kingdom", worldChampionships: 0, photo: "https://upload.wikimedia.org/wikipedia/commons/0/03/Aston_Martin_F1_Team_logo_2024.jpg" },
-      { name: "Haas", country: "United States", worldChampionships: 0, photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Haas_F1_Team_Logo.svg/1280px-Haas_F1_Team_Logo.svg.png" },
-      { name: "Alpine", country: "France", worldChampionships: 0, photo: "https://upload.wikimedia.org/wikipedia/fr/thumb/1/1f/Alpine.svg/1200px-Alpine.svg.png" },
-      { name: "Audi", country: "Germany", worldChampionships: 0, photo: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Audif1.com_logo17_%28cropped%29.svg/960px-Audif1.com_logo17_%28cropped%29.svg.png" },
-      { name: "Cadillac Racing", country: "United States", worldChampionships: 0, photo: "https://upload.wikimedia.org/wikipedia/commons/d/d8/Cadillac_Formula_1_Team_logo.png" }
+      {
+        name: "Real Madrid",
+        country: "España",
+        worldChampionships: 14,
+        photo: "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg"
+      },
+      {
+        name: "FC Barcelona",
+        country: "España",
+        worldChampionships: 5,
+        photo: "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg"
+      },
+      {
+        name: "Manchester City",
+        country: "Inglaterra",
+        worldChampionships: 1,
+        photo: "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg"
+      },
+      {
+        name: "Bayern Munich",
+        country: "Alemania",
+        worldChampionships: 6,
+        photo: "https://upload.wikimedia.org/wikipedia/en/1/1f/FC_Bayern_München_logo_%282017%29.svg"
+      },
+      {
+        name: "Paris Saint-Germain",
+        country: "Francia",
+        worldChampionships: 0,
+        photo: "https://upload.wikimedia.org/wikipedia/en/a/a7/Paris_Saint-Germain_F.C..svg"
+      },
+      {
+        name: "Liverpool",
+        country: "Inglaterra",
+        worldChampionships: 6,
+        photo: "https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg"
+      },
+      {
+        name: "AC Milan",
+        country: "Italia",
+        worldChampionships: 7,
+        photo: "https://upload.wikimedia.org/wikipedia/commons/d/d0/Logo_of_AC_Milan.svg"
+      },
+      {
+        name: "Chelsea",
+        country: "Inglaterra",
+        worldChampionships: 2,
+        photo: "https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg"
+      }
     ];
 
-
-    // Insertar cada equipo
     for (const team of teams) {
       await pool.query(
         `INSERT INTO Equips (eq_nom, eq_pais, eq_campions, eq_photo)
@@ -53,8 +88,9 @@ async function crearBaseDeDatos() {
       );
     }
 
-    console.log("Tablas creadas correctamente en PostgreSQL AlwaysData.");
+    console.log("⚽ Base de datos de clubes de fútbol creada correctamente.");
     await pool.end();
+
   } catch (error) {
     console.error("Error al crear las tablas:", error);
   }

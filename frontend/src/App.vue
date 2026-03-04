@@ -16,23 +16,20 @@ const logout = () => {
 
 <template>
   <nav class="navbar">
-    <div class="nav-left">
-      <RouterLink to="/" class="nav-link">🏠 Inici</RouterLink>
-    </div>
+    <RouterLink to="/" class="logo">⚽ Football Clubs</RouterLink>
 
-    <div class="nav-center">
+    <div class="nav-links">
+      <RouterLink to="/equips">Clubs</RouterLink>
+
       <template v-if="!userStore.user">
-        <RouterLink to="/login" class="nav-link">Iniciar sessió</RouterLink>
+        <RouterLink to="/login">Login</RouterLink>
+        <RouterLink to="/register">Registre</RouterLink>
       </template>
 
       <template v-else>
-        <RouterLink to="/equips" class="nav-link">Equips</RouterLink>
+        <span class="user">Hola, {{ userStore.user.nombre }}</span>
+        <button @click="logout" class="logout">Logout</button>
       </template>
-    </div>
-
-    <div class="nav-right" v-if="userStore.user">
-      <span class="nav-user">Hola, {{ userStore.user.nombre }}</span>
-      <button @click="logout" class="nav-link btn-logout">Logout</button>
     </div>
   </nav>
 
@@ -40,69 +37,49 @@ const logout = () => {
 </template>
 
 <style scoped>
-/* Navbar general */
 .navbar {
-  display: flex;
-  justify-content: center; 
-  align-items: center;
+  background: linear-gradient(90deg, #0f2027, #14532d);
   padding: 1rem 2rem;
-  background: linear-gradient(90deg, #1b1f23, #111416);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  flex-wrap: wrap;
-  gap: 1rem;
-  text-align: center;
-}
-
-/* Grupos de elementos */
-.nav-left,
-.nav-center,
-.nav-right {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 0.5rem;
+  color: white;
 }
 
-/* Links generales */
-.nav-link {
-  color: #e5e7eb;
+.logo {
+  font-weight: bold;
+  text-decoration: none;
+  color: white;
+  font-size: 1.3rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+a {
+  color: white;
   text-decoration: none;
   font-weight: 500;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  transition: background-color 0.2s, color 0.2s, transform 0.2s;
-  background: none;
+}
+
+a:hover {
+  color: #22c55e;
+}
+
+.logout {
+  background: #ef4444;
   border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  color: white;
   cursor: pointer;
 }
 
-.nav-link:hover {
-  background-color: #2d333b;
-  color: #ffffff;
-  transform: translateY(-2px);
-}
-
-/* Usuario */
-.nav-user {
-  color: #22d37b;
-  font-weight: 600;
-  margin-right: 0.5rem;
-}
-
-/* Logout */
-.btn-logout {
-  background-color: #ef4444;
-  color: white;
-  transition: background-color 0.2s, transform 0.2s;
-}
-
-.btn-logout:hover {
-  background-color: #b91c1c;
-  transform: translateY(-2px);
-}
-
-/* Link activo */
-.router-link-active {
-  background-color: #229753; 
-  color: white;
+.user {
+  color: #22c55e;
+  font-weight: bold;
 }
 </style>
